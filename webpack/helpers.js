@@ -14,7 +14,7 @@ const src = {
   STATIC: `${ROOT}/static`,
 };
 
-const TEMPLATE_TYPES = ["html", "pug", "ejs", "hbs"];
+const TEMPLATE_TYPES = ["html", "pug", "ejs", "hbs", 'handlebars'];
 
 const useFileLoaderImage = () => {
   return {
@@ -38,12 +38,17 @@ const useFileLoaderImage = () => {
 };
 
 const templatePlugin = () => {
-  return fs
+  let hasExtension = [];
+  const res = fs
     .readdirSync(path.join(__dirname, src.PAGES))
     .filter(item => {
       const parts = item.split(".");
       const extension = String(parts.slice(-1));
-      return TEMPLATE_TYPES.some(item => item === extension);
+      return TEMPLATE_TYPES.some(item => {
+        const isExtension = item === extension;
+        if (isExtension) hasExtension.push(extension);
+        return isExtension
+      });
     })
     .map(item => {
       const parts = item.split(".");
@@ -59,21 +64,23 @@ const templatePlugin = () => {
         }
       });
     });
+    return res;
 };
 
 const getEntry = () => {
   let entry = {};
   fs.readdirSync(path.join(__dirname, src.JS)).forEach((file) => {
     if (file.match(/.*\.js$/)) {
-      const parts = file.split(".");
+      const parts = item.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
       entry[`js/${name}.js`] = path.join(__dirname, src.JS, file);
     }
   });
   fs.readdirSync(path.join(__dirname, ROOT)).forEach((file) => {
-    if (file.match(/.*\.html$/)) {
+    if (file.match(/.*\.(html|hbs|ejs|handlebars|pug)$/)) {
       const parts = file.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
+      // const extension = String(parts.slice(-1));
       entry[`${name}.html`] = path.join(__dirname, ROOT, file);
     }
   });
