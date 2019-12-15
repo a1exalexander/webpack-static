@@ -1,4 +1,4 @@
-# Webpack config for pure static pages (Landing pages)
+# Webpack config for static pages (Landing pages)
 
 <div align="center">
   <a href="https://github.com/webpack/webpack">
