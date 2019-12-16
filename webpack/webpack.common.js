@@ -19,6 +19,18 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.hbs$/,
+        use: [
+          {
+            loader: "handlebars-template-loader",
+            query: {
+              // parseDynamicRoutes: true,
+              attributes: ['img:src', 'x-img:src', 'link:href']
+            }
+          },
+        ]
+      },
+      {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
@@ -81,9 +93,7 @@ module.exports = {
               esModule: false
             }
           },
-          {
-            loader: 'extract-loader'
-          },
+          'extract-loader',
           'css-loader',
           'sass-loader',
           {
@@ -100,6 +110,6 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{ from: path.join(__dirname, helpers.src.STATIC), to: 'public' }]),
-    ...helpers.templatePlugin()
+    ...helpers.templatePlugin(),
   ]
 };

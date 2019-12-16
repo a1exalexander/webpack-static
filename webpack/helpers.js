@@ -71,7 +71,7 @@ const getEntry = () => {
   let entry = {};
   fs.readdirSync(path.join(__dirname, src.JS)).forEach((file) => {
     if (file.match(/.*\.js$/)) {
-      const parts = item.split(".");
+      const parts = file.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
       entry[`js/${name}.js`] = path.join(__dirname, src.JS, file);
     }
@@ -80,7 +80,6 @@ const getEntry = () => {
     if (file.match(/.*\.(html|hbs|ejs|handlebars|pug)$/)) {
       const parts = file.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
-      // const extension = String(parts.slice(-1));
       entry[`${name}.html`] = path.join(__dirname, ROOT, file);
     }
   });

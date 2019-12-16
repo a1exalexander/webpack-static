@@ -7,6 +7,15 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   module: {
     rules: [
+      // Uncomment bot line to use JS import CSS
+      // {
+      //   test: /\.s[ac]ss$/i,
+      //   use: [
+      //     'style-loader',
+      //     'css-loader',
+      //     'sass-loader',
+      //   ],
+      // },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,
         use: [

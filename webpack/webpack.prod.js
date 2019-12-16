@@ -2,12 +2,23 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const ImageminPlugin = require("imagemin-webpack");
 const helpers = require('./helpers');
+// Uncomment bot line to use JS import CSS
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
   devtool: 'hidden-source-map',
   module: {
     rules: [
+      // Uncomment bot line to use JS import CSS
+      // {
+      //   test: /\.s[ac]ss$/i,
+      //   use: [
+      //     MiniCssExtractPlugin.loader,
+      //     'css-loader',
+      //     'sass-loader',
+      //   ],
+      // },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,
         use: [
@@ -39,5 +50,12 @@ module.exports = merge(common, {
         ]
       },
     ]
-  }
+  },
+  // Uncomment bot line to use JS import CSS
+  // plugins: [
+  //   new MiniCssExtractPlugin({
+  //     filename: '[name].css',
+  //     chunkFilename: '[id].css',
+  //   }),
+  // ],
 });
