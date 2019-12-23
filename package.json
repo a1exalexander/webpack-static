@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode ./webpack/development --open",
+    "start": "webpack-dev-server --config ./webpack/webpack.dev.js --open",
     "dev": "webpack-dev-server --config ./webpack/webpack.dev.js --open",
     "build": "webpack --config ./webpack/webpack.prod.js",
     "build:dev": "webpack --config ./webpack/webpack.dev.js",
@@ -50,5 +50,8 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
     "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "hash-sum": "^2.0.0"
   }
 }

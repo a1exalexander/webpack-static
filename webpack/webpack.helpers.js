@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const sum = require('hash-sum');
 const fs = require("fs");
 const path = require("path");
 
@@ -11,7 +12,9 @@ const src = {
   PAGES: `${ROOT}`,
   ASSETS: `${ROOT}/assets`,
   PUBLIC: `${ROOT}/public`,
+  SCSS: `${ROOT}/scss`,
   STATIC: `${ROOT}/static`,
+  COMPONENTS: `${ROOT}/components`,
 };
 
 const TEMPLATE_TYPES = ["html", "pug", "ejs", "hbs", 'handlebars'];
@@ -40,7 +43,7 @@ const useFileLoaderImage = () => {
 const templatePlugin = () => {
   let hasExtension = [];
   const res = fs
-    .readdirSync(path.join(__dirname, src.PAGES))
+    .readdirSync(path.resolve(__dirname, src.PAGES))
     .filter(item => {
       const parts = item.split(".");
       const extension = String(parts.slice(-1));
@@ -57,8 +60,11 @@ const templatePlugin = () => {
 
       return new HtmlWebpackPlugin({
         filename: `${name}.html`,
-        inject: false,
-        template: path.join(__dirname, src.PAGES, `${name}.${extension}`),
+        files: {
+          js: [ `js/${name}.js`],
+        },
+        // inject: false,
+        template: path.resolve(__dirname, src.PAGES, `${name}.${extension}`),
         minify: {
           collapseWhitespace: true
         }
@@ -69,18 +75,18 @@ const templatePlugin = () => {
 
 const getEntry = () => {
   let entry = {};
-  fs.readdirSync(path.join(__dirname, src.JS)).forEach((file) => {
+  fs.readdirSync(path.resolve(__dirname, src.JS)).forEach((file) => {
     if (file.match(/.*\.js$/)) {
       const parts = file.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
-      entry[`js/${name}.js`] = path.join(__dirname, src.JS, file);
+      entry[`js/${name}.${sum(Date.now)}.js`] = path.resolve(__dirname, src.JS, file);
     }
   });
-  fs.readdirSync(path.join(__dirname, ROOT)).forEach((file) => {
+  fs.readdirSync(path.resolve(__dirname, ROOT)).forEach((file) => {
     if (file.match(/.*\.(html|hbs|ejs|handlebars|pug)$/)) {
       const parts = file.split(".");
       const name = `${parts[0]}${parts[2] ? "." + parts[1] : ""}`;
-      entry[`${name}.html`] = path.join(__dirname, ROOT, file);
+      entry[`${name}.html`] = path.resolve(__dirname, ROOT, file);
     }
   });
   return entry;
@@ -88,7 +94,7 @@ const getEntry = () => {
 
 const copyPlugin = () => {
   return new CopyWebpackPlugin([
-    { from: path.join(__dirname, src.PUBLIC), to: "public" }
+    { from: path.resolve(__dirname, src.PUBLIC), to: "public" }
   ])
 }
 
