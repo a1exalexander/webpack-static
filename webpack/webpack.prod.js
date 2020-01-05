@@ -1,6 +1,6 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
-const ImageminPlugin = require("imagemin-webpack");
+const ImageminPlugin = require('imagemin-webpack');
 const postcssPresetEnv = require('postcss-preset-env');
 const helpers = require('./webpack.helpers');
 // Uncomment bot line to use JS import CSS
@@ -17,15 +17,15 @@ module.exports = merge(common, {
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader',
           {
             loader: 'postcss-loader',
             options: {
               ident: 'postcss',
               plugins: () => [postcssPresetEnv()]
             }
-          }
-        ],
+          },
+          'sass-loader'
+        ]
       },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,
@@ -38,11 +38,11 @@ module.exports = merge(common, {
               cache: true,
               imageminOptions: {
                 plugins: [
-                  ["gifsicle", { interlaced: true }],
-                  ["jpegtran", { progressive: true }],
-                  ["optipng", { optimizationLevel: 5 }],
+                  ['gifsicle', { interlaced: true }],
+                  ['jpegtran', { progressive: true }],
+                  ['optipng', { optimizationLevel: 5 }],
                   [
-                    "svgo",
+                    'svgo',
                     {
                       plugins: [
                         {
@@ -56,13 +56,13 @@ module.exports = merge(common, {
             }
           }
         ]
-      },
+      }
     ]
   },
   // Uncomment bot line to use JS import CSS
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'css/style.[hash].css'
-    }),
-  ],
+    })
+  ]
 });

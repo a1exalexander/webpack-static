@@ -14,22 +14,20 @@ module.exports = merge(common, {
         use: [
           'style-loader',
           'css-loader',
-          'sass-loader',
           {
             loader: 'postcss-loader',
             options: {
               ident: 'postcss',
               plugins: () => [postcssPresetEnv()]
             }
-          }
-        ],
+          },
+          'sass-loader'
+        ]
       },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,
-        use: [
-          helpers.useFileLoaderImage(),
-        ]
-      },
+        use: [helpers.useFileLoaderImage()]
+      }
     ]
   }
 });
