@@ -19,10 +19,6 @@ cd my-new-project
 npm install
 ```
 
-```bash
-npm install 
-```
-
 ## Usage
 
 #### Dev server
