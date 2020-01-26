@@ -14,6 +14,12 @@ Webpack is a module bundler. Its main purpose is to bundle JavaScript files for 
 ## Installation
 
 ```bash
+npx degit a1exalexander/webpack-static my-new-project
+cd my-new-project
+npm install
+```
+
+```bash
 npm install 
 ```
 
