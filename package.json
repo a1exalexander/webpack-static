@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --config ./webpack/webpack.dev.js --open",
     "dev": "webpack-dev-server --config ./webpack/webpack.dev.js --open",
-    "build": "webpack --config ./webpack/webpack.prod.js",
+    "build": "webpack --config ./webpack/webpack.prod.js --mode production",
     "build:dev": "webpack --config ./webpack/webpack.dev.js",
     "validate": "html-validate ./src/**/*.html"
   },
@@ -52,6 +52,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "hash-sum": "^2.0.0"
+    "hash-sum": "^2.0.0",
+    "resolve-url-loader": "^3.1.1"
   }
 }

@@ -9,12 +9,13 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '',
-    filename: 'js/[name].js'
+    filename: 'js/[name].js',
   },
   devServer: {
     port: 1234,
     overlay: true,
-    inline: false
+    inline: true,
+    compress: false,
   },
   module: {
     rules: [
@@ -24,10 +25,16 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
+              publicPath: '/css',
               outputPath: 'css',
-              name: helpers.devMode ? '[name].css' : '[name].[hash].css',
-              esModule: false
-            }
+              name(resourcePath) {
+                if (/font/.test(resourcePath)) {
+                  return '[name].css';
+                }
+                return '[name].[hash].css';
+              },
+              esModule: false,
+            },
           },
           'extract-loader',
           'css-loader',
@@ -35,11 +42,11 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               ident: 'postcss',
-              plugins: () => [postcssPresetEnv()]
-            }
+              plugins: () => [postcssPresetEnv()],
+            },
           },
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.hbs$/,
@@ -48,10 +55,10 @@ module.exports = {
             loader: 'handlebars-template-loader',
             query: {
               parseDynamicRoutes: true,
-              attributes: ['img:src', 'x-img:src', 'link:href']
-            }
-          }
-        ]
+              attributes: ['img:src', 'x-img:src', 'link:href'],
+            },
+          },
+        ],
       },
       {
         test: /\.m?js$/,
@@ -60,14 +67,14 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
-        ]
+              presets: ['@babel/preset-env'],
+            },
+          },
+        ],
       },
       {
         test: /\.pug$/,
-        use: ['pug-loader']
+        use: ['pug-loader'],
       },
       {
         test: /\.(html)$/,
@@ -77,10 +84,10 @@ module.exports = {
             options: {
               interpolate: true,
               esModule: false,
-              attrs: ['img:src', 'img:data-src', 'link:href']
-            }
-          }
-        ]
+              attrs: ['img:src', 'img:data-src', 'link:href'],
+            },
+          },
+        ],
       },
       {
         test: /\.(webmanifest|xml|ico|txt)$/,
@@ -89,11 +96,12 @@ module.exports = {
             loader: 'file-loader',
             options: {
               outputPath: 'public',
+              publicPath: '/public',
               name: '[name].[ext]',
-              esModule: false
-            }
-          }
-        ]
+              esModule: false,
+            },
+          },
+        ],
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -101,18 +109,17 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              outputPath: 'assets/fonts',
+              publicPath: '/assets/fonts/',
+              outputPath: 'assets/fonts/',
               name: '[name].[ext]',
-              esModule: false
-            }
-          }
-        ]
-      }
-    ]
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([{ from: path.join(__dirname, helpers.src.STATIC), to: '' }]),
-    ...helpers.templatePlugin()
-  ]
+    new CopyWebpackPlugin([{ from: path.join(__dirname, helpers.src.STATIC), to: '../dist/static' }]),
+  ],
 };
