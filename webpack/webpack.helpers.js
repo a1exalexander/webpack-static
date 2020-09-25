@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const sum = require('hash-sum');
 const fs = require('fs');
 const path = require('path');
 
@@ -19,7 +18,7 @@ const src = {
   COMPONENTS: `${ROOT}/components`,
 };
 
-const TEMPLATE_TYPES = ['html', 'pug', 'ejs', 'hbs', 'handlebars'];
+const TEMPLATE_TYPES = ['html', 'pug'];
 
 const useFileLoaderImage = () => {
   return {
@@ -70,11 +69,39 @@ const getEntry = () => {
       entry[name] = path.resolve(__dirname, src.JS, file);
     }
   });
+  if (Object.keys(entry).length === 0) {
+    fs.readdirSync(path.resolve(__dirname, src.PAGES)).forEach((file) => {
+      if (file.match(/.*\.(html|pug)$/)) {
+        const parts = file.split('.');
+        const name = `${parts[0]}${parts[2] ? '.' + parts[1] : ''}`;
+        entry[name] = path.resolve(__dirname, src.PAGES, file);
+      }
+    });
+  }
   return entry;
+};
+
+const getOutputFilename = () => {
+  let filename = '[name].html';
+  fs.readdirSync(path.resolve(__dirname, src.JS)).forEach((file) => {
+    if (file.match(/.*\.js$/)) {
+      filename = 'js/[name].js';
+    }
+  });
+  return filename;
 };
 
 const copyPlugin = () => {
   return new CopyWebpackPlugin([{ from: path.resolve(__dirname, src.PUBLIC), to: 'public' }]);
 };
 
-module.exports = { devMode, ROOT, copyPlugin, templatePlugin, useFileLoaderImage, getEntry, src };
+module.exports = {
+  devMode,
+  ROOT,
+  copyPlugin,
+  templatePlugin,
+  useFileLoaderImage,
+  getEntry,
+  src,
+  getOutputFilename,
+};

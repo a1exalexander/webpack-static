@@ -6,7 +6,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = (env) => {
-  console.log(env);
   return merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',

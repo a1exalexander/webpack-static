@@ -1,11 +1,9 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const ImageminPlugin = require('imagemin-webpack');
-const postcssPresetEnv = require('postcss-preset-env');
 const helpers = require('./webpack.helpers');
 
 module.exports = (env) => {
-  console.log(env)
   return merge(common, {
     mode: 'production',
     devtool: 'hidden-source-map',

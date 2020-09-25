@@ -1,15 +1,18 @@
 const path = require('path');
+const fs = require('fs');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const helpers = require('./webpack.helpers');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const postcssPresetEnv = require('postcss-preset-env');
+const EventHooksPlugin = require('event-hooks-webpack-plugin');
+const rimraf = require('rimraf');
 
 module.exports = {
   entry: helpers.getEntry(),
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '',
-    filename: 'js/[name].js',
+    filename: helpers.getOutputFilename(),
   },
   devServer: {
     port: 1234,
@@ -49,18 +52,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.hbs$/,
-        use: [
-          {
-            loader: 'handlebars-template-loader',
-            query: {
-              parseDynamicRoutes: true,
-              attributes: ['img:src', 'x-img:src', 'link:href'],
-            },
-          },
-        ],
-      },
-      {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
         use: [
@@ -74,7 +65,14 @@ module.exports = {
       },
       {
         test: /\.pug$/,
-        use: ['pug-loader'],
+        use: [
+          {
+            loader: 'pug-loader',
+            options: {
+              attrs: ['img:src', 'img:data-src', 'link:href'],
+            },
+          },
+        ],
       },
       {
         test: /\.(html)$/,
@@ -85,6 +83,16 @@ module.exports = {
               interpolate: true,
               esModule: false,
               attrs: ['img:src', 'img:data-src', 'link:href'],
+            },
+          },
+          {
+            loader: 'posthtml-loader',
+            options: {
+              plugins: [
+                require('posthtml-include')({
+                  root: './src',
+                }),
+              ],
             },
           },
         ],
@@ -119,7 +127,23 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([{ from: path.join(__dirname, helpers.src.STATIC), to: '../dist/static' }]),
+    new CleanWebpackPlugin({
+      dry: true,
+    }),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname, helpers.src.STATIC), to: '../dist/static' },
+    ]),
+    new EventHooksPlugin({
+      done: () => {
+        const staticFolder = path.resolve(__dirname, '../dist/static');
+        fs.readdir(staticFolder, (err, files) => {
+          const count = files.reduce((prev, acc) => {
+            if (acc === '.gitkeep') return prev;
+            return prev + 1;
+          }, 0);
+          if (!count) rimraf.sync(staticFolder);
+        });
+      },
+    }),
   ],
 };
